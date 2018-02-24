@@ -20,35 +20,8 @@ public class Main {
      */
 
     public static void main(String[] args) {
-        JSONParser parser = new JSONParser();
-        try {
-            Object obj = parser.parse(new FileReader("C:/Users/tsmurra2/IdeaProjects/Traffic_Integration/resources.txt"));
-            JSONObject jsonObject = (JSONObject) obj;
-            String key = (String) ((JSONObject) jsonObject.get("Keys")).get("Mapquest");
-            demo_MQ(key);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Helper.demo_MSDN();
     }
 
-    public static void demo_MQ(String key) throws IOException{
-        String api = "Mapquest";
-        String max_lat = "42.024449";
-        String min_lng = "-87.943483";
-        String min_lat = "41.643428";
-        String max_lng = "-87.531496";
-        String filt1 = "incidents";
-        String filt2 = "construction";
-        String filt3 = "congestion";
-        String[] args = {api,key,max_lat,min_lat,max_lng,min_lng,filt1,filt2,filt3};
-        API_Connector connect = new MQ_Connector(args);
-        Helper.PrettyPrintJSON(connect.getRequest().toString());
-        try {
-            connect.sendRequest();
-        } catch (Exception e) {
-            System.out.println("Raised exception: "+e.toString());
-        }
-        Helper.PrettyPrintJSON(connect.getResponses());
-    }
 
 }

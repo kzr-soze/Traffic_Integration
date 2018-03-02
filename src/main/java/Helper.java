@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import javax.json.JsonObject;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -25,7 +26,10 @@ public class Helper {
     public static void demo_MQ(){
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("C:/Users/tsmurra2/IdeaProjects/Traffic_Integration/resources.txt"));
+            String filename = "resources.txt";
+            String workingDirectory = System.getProperty("user.dir");
+            String absoluteFilePath = workingDirectory + File.separator + filename;
+            Object obj = parser.parse(new FileReader(absoluteFilePath));
             JSONObject jsonObject = (JSONObject) obj;
             String key = (String) ((JSONObject) jsonObject.get("Keys")).get("Mapquest");
 
@@ -55,7 +59,10 @@ public class Helper {
     public static void demo_MSDN() {
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("C:/Users/tsmurra2/IdeaProjects/Traffic_Integration/resources.txt"));
+            String filename = "resources.txt";
+            String workingDirectory = System.getProperty("user.dir");
+            String absoluteFilePath = workingDirectory + File.separator + filename;
+            Object obj = parser.parse(new FileReader(absoluteFilePath));
             JSONObject jsonObject = (JSONObject) obj;
             String key = (String) ((JSONObject) jsonObject.get("Keys")).get("Microsoft");
             String api = "Microsoft";

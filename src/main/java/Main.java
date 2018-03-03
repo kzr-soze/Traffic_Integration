@@ -20,7 +20,20 @@ public class Main {
      */
 
     public static void main(String[] args) {
-        Helper.demo_MSDN();
+        switch(args[0]) {
+            case "Mapquest":
+                Helper.demo_MQ();
+                break;
+            case "Microsoft":
+                Helper.demo_MSDN();
+                break;
+            case "Bing":
+                Helper.demo_MSDN();
+                break;
+            default:
+                System.out.println("The requested service does not exist.");
+                return;
+        }
     }
 
 

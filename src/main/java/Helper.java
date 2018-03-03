@@ -64,8 +64,8 @@ public class Helper {
             String min_lat = "41.643428";
             String max_lng = "-87.531496";
             String mapArea = min_lat+","+max_lng+","+max_lat+","+min_lng;
-           // String type = "1,3,10";
-            String[] args = {"api",api,"key",key,"mapArea",mapArea};
+            String type = "1,2,3,5,10";
+            String[] args = {"api",api,"key",key,"mapArea",mapArea,"type",type};
             API_Connector connect = new MSDN_Connector(args);
             Helper.PrettyPrintJSON(connect.getRequest().toString());
             try {

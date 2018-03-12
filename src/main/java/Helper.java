@@ -1,6 +1,7 @@
 import Connectors.API_Connector;
 import Connectors.MQ_Connector;
 import Connectors.MSDN_Connector;
+import Connectors.TT_Connector;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -83,6 +84,40 @@ public class Helper {
             Helper.PrettyPrintJSON(connect.getResponses());
 
         } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void demo_TT(){
+        JSONParser parser = new JSONParser();
+        try {
+            String filename = "resources.txt";
+            String workingDirectory = System.getProperty("user.dir");
+            String absoluteFilePath = workingDirectory + File.separator + filename;
+            Object obj = parser.parse(new FileReader(absoluteFilePath));
+            JSONObject jsonObject = (JSONObject) obj;
+            String key = (String) ((JSONObject) jsonObject.get("Keys")).get("TomTom");
+
+            String api = "TomTom";
+            String max_lat = "42.024449";
+            String min_lng = "-87.943483";
+            String min_lat = "41.643428";
+            String max_lng = "-87.531496";
+            String zoom = "10";
+            String trafficModelID = "-1";
+            String expandCluster = "False";
+            String style = "s3";
+            String[] args = {"api",api,"key",key,"boundingBox",""+min_lat+","+min_lng+","+max_lat+","+max_lng,"style",style,"zoom",zoom,"trafficModelID",trafficModelID};
+            API_Connector connect = new TT_Connector(args);
+            Helper.PrettyPrintJSON(connect.getRequest().toString());
+            try {
+                connect.sendRequest();
+            } catch (Exception e) {
+                System.out.println("Raised exception: "+e.toString());
+            }
+            Helper.PrettyPrintJSON(connect.getResponses());
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

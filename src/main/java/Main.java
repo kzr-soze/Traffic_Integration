@@ -30,6 +30,9 @@ public class Main {
             case "Bing":
                 Helper.demo_MSDN();
                 break;
+            case "TomTom":
+                Helper.demo_TT();
+                break;
             default:
                 System.out.println("The requested service does not exist.");
                 return;

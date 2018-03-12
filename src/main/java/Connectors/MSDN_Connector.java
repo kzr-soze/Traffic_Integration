@@ -106,7 +106,7 @@ public class MSDN_Connector implements API_Connector {
         }
     }
 
-    @Override
+
     public String getResponses() {
         return responses;
     }

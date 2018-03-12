@@ -54,14 +54,45 @@ public class TT_Connector  implements API_Connector{
         request.put("format","json");
     }
 
-    @Override
     public JSONObject getRequest() {
         return request;
     }
 
-
     public void sendRequest() throws IOException {
         get_url = "https://api.tomtom.com/traffic/services/4/incidentDetails/";
+        get_url = get_url+request.get("style")+"/"+request.get("boundingBox")+"/"+request.get("zoom")+"/"+request.get("trafficModelID")+
+                "/"+request.get("format")+"?key="+request.get("key")+"&projection=EPSG4326&expandCluster=";
+        if (request.containsKey("expandCluster")){
+            get_url = get_url+request.get("expandCluster");
+        } else {
+            get_url = get_url+"False";
+        }
+
+        URL obj = new URL(get_url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        System.out.println("Constructed connection: "+con.toString());
+        int responseCode = con.getResponseCode();
+        String responseMessage = con.getResponseMessage();
+        System.out.println("GET Response Code :: " + responseCode);
+        System.out.println("GET Response Message :: " + responseMessage);
+        if (responseCode == HttpURLConnection.HTTP_OK) { // success
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            // print result
+//            System.out.println(response.toString());
+            responses = response.toString();
+        } else {
+            System.out.println("GET request not worked");
+        }
 
     }
 

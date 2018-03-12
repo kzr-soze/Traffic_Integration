@@ -11,27 +11,28 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MSDN_Connector implements API_Connector {
-    private JSONObject request;
+public class TT_Connector  implements API_Connector{
+    public JSONObject request;
     private String[] args;
+    private String responses;
     private String get_url = "";
-    private String responses = "";
 
-
-    public MSDN_Connector(String[] args){
+    public TT_Connector(String[] args){
         this.args = args;
         constructURL();
     }
 
     /**
      * Constructs the Json of the url, both to record the request and to later construct the request url
-     * Accepted parameters:
-     *  mapArea (required) : minLat,maxLong,maxLat,minLong
-     *  key (required) : Bing maps key
-     *  includeLocationCodes (optional)
-     *  severity (optional)
-     *  type (optional)
-     *  See https://msdn.microsoft.com/en-us/library/hh441726 for more information on parameter specifications
+     * Accepted parameters: (see https://developer.tomtom.com/online-traffic/online-traffic-documentation-online-traffic-incidents/traffic-incident-details
+     * for more details)
+     *  style (required) : s1,s2,s3,night
+     *  boundingBox (required) : minLat,minLong,maxLat,maxLong
+     *  zoom (required) : 0,1,...,18
+     *  trafficModelID (required) : suggested -1
+     *  format (required) : hardcoded to be json for this app
+     *  key (required) : TomTom maps key
+     *
      */
     public void constructURL() {
 
@@ -47,38 +48,26 @@ public class MSDN_Connector implements API_Connector {
                 go = false;
             }
         }
+        if (request.containsKey("format")){
+            request.remove("format");
+        }
+        request.put("format","json");
     }
 
-    /**
-     * gets the Json of the request
-     * @return request
-     */
     public JSONObject getRequest() {
         return request;
     }
 
-
     public void sendRequest() throws IOException {
-        get_url = "http://dev.virtualearth.net/REST/v1/Traffic/Incidents/"
-                +request.get("mapArea").toString().replace("\"","");
-
-
-        //Because of the small number of optional parameters, checking the existence of each so that they can be specified
-        //correctly is easy, rather than working in a loop with several specific if statements.
-        if (request.containsKey("includeLocationCodes")) {
-            get_url = get_url + "/" + request.get("includeLocationCodes").toString().replace("\"","") + "?";
+        get_url = "https://api.tomtom.com/traffic/services/4/incidentDetails/";
+        get_url = get_url+request.get("style")+"/"+request.get("boundingBox")+"/"+request.get("zoom")+"/"+request.get("trafficModelID")+
+                "/"+request.get("format")+"?key="+request.get("key")+"&projection=EPSG4326&expandCluster=";
+        if (request.containsKey("expandCluster")){
+            get_url = get_url+request.get("expandCluster");
         } else {
-            get_url = get_url + "?";
+            get_url = get_url+"False";
         }
-        if (request.containsKey("severity")){
-            get_url = get_url + "severity=" + request.get("severity").toString().replace("\"","") + "&";
-        }
-        if (request.containsKey("type")){
-            get_url = get_url + "type=" + request.get("type").toString().replace("\"","") + "&";
-        }
-        get_url = get_url + "key=" + request.get("key").toString().replace("\"","");
 
-        //send the connection
         URL obj = new URL(get_url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
@@ -104,6 +93,7 @@ public class MSDN_Connector implements API_Connector {
         } else {
             System.out.println("GET request not worked");
         }
+
     }
 
 

@@ -1,5 +1,7 @@
 package Connectors;
 
+import org.json.simple.JSONObject;
+
 import javax.json.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,7 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MQ_Connector implements API_Connector{
-    public JsonObject request;
+    public JSONObject request;
     private int numFilters;
     private String[] args;
     String responses;
@@ -30,30 +32,21 @@ public class MQ_Connector implements API_Connector{
     Creates a JSON of the url for readability
      */
     public void constructURL(){
-        JsonObject ul = Json.createObjectBuilder()
-                .add("lat",Double.parseDouble(args[2]))
-                .add("lng",Double.parseDouble(args[5]))
-                .build();
-        JsonObject lr = Json.createObjectBuilder()
-                .add("lat",Double.parseDouble(args[3]))
-                .add("lng",Double.parseDouble(args[4]))
-                .build();
-        JsonArrayBuilder builder = Json.createArrayBuilder();
-        for(int i = 0; i < numFilters; i++){
-            builder.add(args[6+i]);
+        request = new JSONObject();
+        int index = 0;
+        int argLength = args.length;
+        boolean go = true;
+        while (go) {
+            String parameter = args[index];
+            request.put(parameter,args[index+1]);
+            index = index+2;
+            if (index >= argLength){
+                go = false;
+            }
         }
-        JsonArray filters = builder.build();
-        JsonObject boundingBox = Json.createObjectBuilder()
-                .add("ul",ul)
-                .add("lr",lr)
-                .build();
-        request = Json.createObjectBuilder()
-                .add("boundingBox",boundingBox)
-                .add("filters", filters)
-                .build();
     }
 
-    public JsonObject getRequest(){
+    public JSONObject getRequest(){
         return request;
     }
 
@@ -71,7 +64,7 @@ public class MQ_Connector implements API_Connector{
     }
 
     public void sendRequest() throws IOException{
-        get_url = "http://www.mapquestapi.com/traffic/v2/incidents?boundingBox="+getBoundingBox()+"&filters="+getFilters()+"&key="+args[1];
+        get_url = "http://www.mapquestapi.com/traffic/v2/incidents?boundingBox="+request.get("boundingBox")+"&filters="+request.get("filters")+"&key="+request.get("key");
         URL obj = new URL(get_url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");

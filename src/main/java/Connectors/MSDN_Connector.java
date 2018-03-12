@@ -1,5 +1,7 @@
 package Connectors;
 
+import org.json.simple.JSONObject;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -10,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MSDN_Connector implements API_Connector {
-    private JsonObject request;
+    private JSONObject request;
     private String[] args;
     private String get_url = "";
     private String responses = "";
@@ -33,27 +35,25 @@ public class MSDN_Connector implements API_Connector {
      */
     public void constructURL() {
 
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        request = new JSONObject();
         int index = 0;
         int argLength = args.length;
         boolean go = true;
         while (go) {
             String parameter = args[index];
-            builder.add(parameter,args[index+1]);
+            request.put(parameter,args[index+1]);
             index = index+2;
             if (index >= argLength){
                 go = false;
             }
         }
-
-        request = builder.build();
     }
 
     /**
      * gets the Json of the request
      * @return request
      */
-    public JsonObject getRequest() {
+    public JSONObject getRequest() {
         return request;
     }
 

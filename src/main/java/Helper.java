@@ -41,7 +41,7 @@ public class Helper {
             String filt1 = "incidents";
             String filt2 = "construction";
             String filt3 = "congestion";
-            String[] args = {api,key,max_lat,min_lat,max_lng,min_lng,filt1,filt2,filt3};
+            String[] args = {"api",api,"key",key,"boundingBox",""+max_lat+","+min_lng+","+min_lat+","+max_lng,"filters",filt1+","+filt2+","+filt3};
             API_Connector connect = new MQ_Connector(args);
             Helper.PrettyPrintJSON(connect.getRequest().toString());
             try {
